@@ -725,12 +725,15 @@ void ModMateAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer
 
 bool ModMateAudioProcessor::hasEditor() const
 {
-    return true;
+    return !juce::Desktop::getInstance().isHeadless();
 }
 
 AudioProcessorEditor* ModMateAudioProcessor::createEditor()
 {
-    return new ModMateAudioProcessorEditor(*this);
+    if (!juce::Desktop::getInstance().isHeadless())
+        return new ModMateAudioProcessorEditor(*this);
+    
+    return nullptr;
 }
 
 void ModMateAudioProcessor::getStateInformation (MemoryBlock& destData)
