@@ -534,8 +534,11 @@ void ModMateAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer
 
     MidiMessage msg;
     int samplePos;
-    for (MidiBuffer::Iterator it(midiMessages); it.getNextEvent(msg, samplePos);)
+    for (const auto meta : midiMessages)
     {
+        msg = meta.getMessage();
+        samplePos = meta.samplePosition;
+        
         if (msg.isPitchWheel() && (pbDown.byteValue || pbUp.byteValue))
         {
             int pwv = msg.getPitchWheelValue();
@@ -752,7 +755,7 @@ void ModMateAudioProcessor::getStateInformation (MemoryBlock& destData)
 
 void ModMateAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    ScopedPointer<XmlElement> xml = getXmlFromBinary(data, sizeInBytes);
+    std::unique_ptr<XmlElement> xml = getXmlFromBinary(data, sizeInBytes);
     pbUp.byteValue = xml->getIntAttribute("pbUpBits", 0);
     pbDown.byteValue = xml->getIntAttribute("pbDownBits", 0);
     wheel.byteValue = xml->getIntAttribute("wheelBits", 0);
