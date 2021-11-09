@@ -32,6 +32,18 @@ ModMateAudioProcessor::ModMateAudioProcessor()
     ctrl2.byteValue = 0;
     ctrl4.byteValue = 0;
     ctrl67.byteValue = 0;
+    
+    //Hardwire some params for the headless version until
+    //we can set up some kind of remote control that doesn't use
+    //X-forwarding
+    if (juce::Desktop::getInstance().isHeadless())
+    {
+        wheel.bits.cc1 = true;
+        wheel.bits.cc2 = true;
+        wheel.bits.cc4 = true;
+        wheel.bits.cc67 = true;
+    }
+    
 }
 
 ModMateAudioProcessor::~ModMateAudioProcessor()
